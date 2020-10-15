@@ -1,7 +1,8 @@
 package A2;
 
 import java.util.Random;
-
+//  ** Note this is just to fill the board with a random length between 5-20 and random numbers n->n-1. Still have to figure out
+//  ** how we can traverse the array 
 public class magicBoard {
 
     public static void createBoard()
