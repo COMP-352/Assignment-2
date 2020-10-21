@@ -1,6 +1,4 @@
 package com.company;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.*;
 import java.io.*;
@@ -48,7 +46,7 @@ public class Main {
         for (int row = 0; row < board.length; row++) {
             for (int col = 0; col < board.length; col++) {
                 if (board[row][col] == 0)
-                    System.out.print((char) 27 + "[1m" + board[row][col] + "\t ");
+                    System.out.print((char) 27 + "[1m" + "\033[3m" + board[row][col] + "\033[0m" + "\t ");
                 else if(row == start_row && col == start_col)
                     System.out.print((char) 27 + "[1m" + "\033[3m" + board[row][col] + "\033[0m" + "\t ");
                 else
@@ -60,7 +58,7 @@ public class Main {
     }
 
 
-    public static String DefineStart(int[][] board) {
+    public static String DefineStart(int[][] board, int start_row, int start_col) {
         String start_string;
         System.out.println("It is now time for you to select your starting point." +
                 "\nYou can begin only at one of the four corners of the board." +
@@ -68,20 +66,36 @@ public class Main {
         Scanner input = new Scanner(System.in);
         start_string = input.nextLine();
 
-        while (!Validation(start_string)) {
-            System.out.println("I am sorry, you did not enter correctly the wanted position, you have to try again and take care of typos." +
-                    "\nPlease write either \"top-left\", \"top-right\", \"bottom-left\" or \"bottom-right\".");
+        while (!Validation(start_string, board, start_row, start_col)) {
+            if (!StartStringValidation(start_string))
+                System.out.println("I am sorry, you did not enter correctly the wanted position, you have to try again and take " +
+                        "care of typos.\nPlease write either \"top-left\", \"top-right\", \"bottom-left\" or \"bottom-right\".");
+            if (IllegalStart(board, start_string, start_row, start_col))
+                System.out.println("Dear user, you are not allowed to start at the same position than the 0. Please enter an other position !");
+
             start_string = input.nextLine();
         }
-
         return start_string;
     }
 
-    public static boolean LegalStart(int[][]board) { //check if the 0 and the start are at the same position
 
-        return true;
+    public static boolean IllegalStart(int[][]board,String start_string, int start_row, int start_col) {    //check if the 0 and the start are at the same position
+        if (StartStringValidation(start_string)) {
+            start_row = DefineStartingRow(board, start_string);
+            start_col = DefineStartingCol(board, start_string);
+        }
+
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board.length; col++) {
+                if (board[row][col] == 0)
+                    if (row == start_row && col == start_col)
+                        return true;
+            }
+        }
+        return false;
     }
-    public static boolean Validation(String start) {
+
+    public static boolean StartStringValidation(String start) {
 
         int counter = 0;
         if (!start.equals("top-left"))
@@ -93,21 +107,17 @@ public class Main {
         if (!start.equals("bottom-left"))
             counter++;
 
-        if (counter == 4)
-            return false;
-
-        return true;
+        return counter != 4; //returns false if the input string does not correspond to the four wanted strings
     }
 
+    public static boolean Validation(String start, int[][] board, int start_row, int start_col) {
+        if (IllegalStart(board, start, start_row, start_col))
+            return false;
+        else return StartStringValidation(start);
+    }
 
     public static int DefineStartingRow(int[][] board, String start) {
         int start_row = 0;
-
-        if (start.equals("top-left"))
-            start_row = 0;
-
-        if (start.equals("top-right"))
-            start_row = 0;
 
         if (start.equals("bottom-left"))
             start_row = board.length - 1;
@@ -123,14 +133,8 @@ public class Main {
 
         int start_col = 0;
 
-        if (start.equals("top-left"))
-            start_col = 0;
-
         if (start.equals("top-right"))
             start_col = (board.length - 1);
-
-        if (start.equals("bottom-left"))
-            start_col = 0;
 
         if (start.equals("bottom-right"))
             start_col = (board.length - 1);
@@ -165,7 +169,7 @@ public class Main {
         int[][] board = new int[row][col];
 
         BoardCreation(board);
-        start_string = DefineStart(board);
+        start_string = DefineStart(board, start_row, start_col);
         start_col = DefineStartingCol(board, start_string);
         start_row = DefineStartingRow(board, start_string);
         System.out.println((char) 27 + "[0m" +
