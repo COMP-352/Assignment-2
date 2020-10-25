@@ -12,6 +12,7 @@ final class Position {
     Node head;
     private int row;
     private int col;
+    private int value;
  //  private int parent_counter;
     private final LinkedList<Position> nextMove = new LinkedList<>();
     private final Position parent;
@@ -36,7 +37,7 @@ final class Position {
             head = head.next;
         else{
             Node n = head;
-            Node n1 = null;
+            Node n1; //= null;
             for (int i=0;i<index;i++)
                 n=n.next;
             n1=n.next;
@@ -59,6 +60,14 @@ final class Position {
 
     public int getRow() {
         return row;
+    }
+
+    public void setValue(int move){
+        this.value = move;
+    }
+
+    public int getValue(){
+        return value;
     }
 
     public List<Position> getNextMoves() {
@@ -226,37 +235,51 @@ public class Main {
     }
 
     // the wanted method of the assignment which will return true if the game is solvable or false if not
-  /*  public static boolean MagicBoard(Position position, int[][] board, int move, int counter) {
+    public static boolean MagicBoard(Position position, int[][] board, int[][] second_board, int move, int counter) {
 
-        if (counter == 0) {  // RIGHT > column addition
+
+        if (second_board[position.getRow()][position.getCol()] == 1)
+            return false;
+
+        second_board[position.getRow()][position.getCol()] = 1;
+        if (board[position.getRow()][position.getCol()] == board.length - 1) {
+            if (position.getCol() != 0)
+                if (position.getCol() != board.length - 1)
+                    return false;
+            if (position.getRow() != 0)
+                if (position.getRow() != board.length - 1)
+                    return false;
+        }
+
+        if (counter == 0) {// RIGHT > column addition
             if (position.getCol() + move < board.length) {
                 Position next_position = position.nextPosition(position, position.getRow(), (position.getCol() + move));
-                MagicBoard(next_position, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
             } else counter++;
         }
         if (counter == 1) { // LEFT > column subtraction
             if (position.getCol() - move >= 0) {
                 Position next_position = position.nextPosition(position, position.getRow(), (position.getCol() - move));
-                MagicBoard(next_position, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
             } else counter++;
         }
         if (counter == 2) { // UP > row subtraction
             if (position.getRow() - move >= 0) {
                 Position next_position = position.nextPosition(position, (position.getRow() - move), position.getCol());
-                MagicBoard(next_position, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
             } else counter++;
         }
-        if (counter == 3) { // DOWN > row addition
+        if (counter == 2) { // DOWN > row addition
             if (position.getRow() + move < board.length) {
                 Position next_position = position.nextPosition(position, (position.getRow() + move), position.getCol());
-                MagicBoard(next_position, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
             } else if (position.getParent() != null) {
                 position.getParent().getNextMoves().remove(0);
-                MagicBoard(position.getParent(), board, board[position.getParent().getRow()][position.getParent().getCol()], 0);
+                MagicBoard(position.getParent(), second_board, board, board[position.getParent().getRow()][position.getParent().getCol()], 0);
             }
         }
-        return position.getParent() != null;//(board[nextPosition.getRow()][nextPosition.getCol()] == board[end_row][end_col]);
-    }*/
+        return true; //(board[nextPosition.getRow()][nextPosition.getCol()] == board[end_row][end_col]);
+    }
 
     public static void LetsPlay(int[][] board, int move, int start_row, int start_col, int end_row, int end_col) {
         Scanner input = new Scanner(System.in);
@@ -381,15 +404,21 @@ public class Main {
         BoardPrint(board, start_row, start_col);
         int move = board[StartPosition.getRow()][StartPosition.getCol()];
 
-      //  int counter = 0;
-     /*   if (MagicBoard(StartPosition, board, move, counter)) { // check if the game is doable
+        int[][] second_board = new int[row][col];
+        for (int i = 0 ; i<board.length;i++)
+            for (int j = 0; j<board.length;j++)
+                second_board[i][j] = 0;
+
+        int counter = 0;
+
+        if (MagicBoard(StartPosition, board, second_board, move, counter)) { // check if the game is doable
             System.out.println((char) 27 + "[0m" +
                     "\nYour gaming board is solvable and now ready for you to play !\nPlease note that the end point (0) and the " +
                     "point where you are located are written in bold and italic so that you can easy identify them.\n");
             BoardPrint(board, start_row, start_col);
         } else { // if the game is not doable
             System.out.println("\nWe are sorry to announce you that the board initiated is not solvable.");
-        }*/
+        }
         System.out.println((char) 27 + "[0m" +
                 "It is now time for you to play. Please enter either \"left\", \"right\", \"up\" or \"down\" to move through the magic board.");
 
