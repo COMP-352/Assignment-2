@@ -254,28 +254,28 @@ public class Main {
         if (counter == 0) {// RIGHT > column addition
             if (position.getCol() + move < board.length) {
                 Position next_position = position.nextPosition(position, position.getRow(), (position.getCol() + move));
-                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, board, second_board, board[next_position.getRow()][next_position.getCol()], 0);
             } else counter++;
         }
         if (counter == 1) { // LEFT > column subtraction
             if (position.getCol() - move >= 0) {
                 Position next_position = position.nextPosition(position, position.getRow(), (position.getCol() - move));
-                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, board, second_board, board[next_position.getRow()][next_position.getCol()], 0);
             } else counter++;
         }
         if (counter == 2) { // UP > row subtraction
             if (position.getRow() - move >= 0) {
                 Position next_position = position.nextPosition(position, (position.getRow() - move), position.getCol());
-                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, board, second_board, board[next_position.getRow()][next_position.getCol()], 0);
             } else counter++;
         }
         if (counter == 2) { // DOWN > row addition
             if (position.getRow() + move < board.length) {
                 Position next_position = position.nextPosition(position, (position.getRow() + move), position.getCol());
-                MagicBoard(next_position, second_board, board, board[next_position.getRow()][next_position.getCol()], 0);
+                MagicBoard(next_position, board, second_board, board[next_position.getRow()][next_position.getCol()], 0);
             } else if (position.getParent() != null) {
                 position.getParent().getNextMoves().remove(0);
-                MagicBoard(position.getParent(), second_board, board, board[position.getParent().getRow()][position.getParent().getCol()], 0);
+                MagicBoard(position.getParent(), board, second_board, board[position.getParent().getRow()][position.getParent().getCol()], 0);
             }
         }
         return true; //(board[nextPosition.getRow()][nextPosition.getCol()] == board[end_row][end_col]);
