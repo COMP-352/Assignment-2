@@ -254,28 +254,27 @@ do{
     // will try any possible directions
     if (counter == 0) {// RIGHT > column addition
         if (position.getCol() + move < board.length) {
-            Position next_position = position.nextPosition(position, position.getRow(), (position.getCol() + move));
+            position = position.nextPosition(position, position.getRow(), (position.getCol() + move));
         } else counter++;// this position is not doable
 
     }
     if (counter == 1) { // LEFT > column subtraction
         if (position.getCol() - move >= 0) {
-            Position next_position = position.nextPosition(position, position.getRow(), (position.getCol() - move));
+            position = position.nextPosition(position, position.getRow(), (position.getCol() - move));
         } else counter++;
     }
     if (counter == 2) { // UP > row subtraction
         if (position.getRow() - move >= 0) {
-            Position next_position = position.nextPosition(position, (position.getRow() - move), position.getCol());
+            position = position.nextPosition(position, (position.getRow() - move), position.getCol());
         } else counter++;
 
     }
     if (counter == 2) { // DOWN > row addition
         if (position.getRow() + move < board.length) {
-            Position next_position = position.nextPosition(position, (position.getRow() + move), position.getCol());
+            position = position.nextPosition(position, (position.getRow() + move), position.getCol());
         } else if (position.getParent() != null) {
             position.getParent().getNextMoves().remove(0);
-        }else if (position.getParent() == null)
-            return false;
+        }else return false;
     }
 }while(position.getRow() != end_row && position.getCol() != end_col);
 
@@ -411,7 +410,8 @@ do{
                 second_board[i][j] = 0;
 
         int counter = 0;
-
+        Position end_position = new Position(null);
+        end_position.setPosition(end_row, end_col);
         if (MagicBoard(StartPosition, board, second_board, move, counter, end_row, end_col)) { // check if the game is doable
             System.out.println((char) 27 + "[0m" +
                     "\nYour gaming board is solvable and now ready for you to play !\nPlease note that the end point (0) and the " +
