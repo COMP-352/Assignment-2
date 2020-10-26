@@ -237,10 +237,11 @@ public class Main {
     // the wanted method of the assignment which will return true if the game is solvable or false if not
     public static boolean MagicBoard(Position position, int[][] board, int[][] second_board, int move, int counter) {
 
-
+        // avoids infinite loops
         if (second_board[position.getRow()][position.getCol()] == 1)
             return false;
 
+        // avoids infinity loops with maximum values on edges of the board
         second_board[position.getRow()][position.getCol()] = 1;
         if (board[position.getRow()][position.getCol()] == board.length - 1) {
             if (position.getCol() != 0)
@@ -250,12 +251,13 @@ public class Main {
                 if (position.getRow() != board.length - 1)
                     return false;
         }
-
+        // will try any possible directions
         if (counter == 0) {// RIGHT > column addition
             if (position.getCol() + move < board.length) {
                 Position next_position = position.nextPosition(position, position.getRow(), (position.getCol() + move));
                 MagicBoard(next_position, board, second_board, board[next_position.getRow()][next_position.getCol()], 0);
-            } else counter++;
+            } else counter++;// this position is not doable
+
         }
         if (counter == 1) { // LEFT > column subtraction
             if (position.getCol() - move >= 0) {
@@ -268,6 +270,7 @@ public class Main {
                 Position next_position = position.nextPosition(position, (position.getRow() - move), position.getCol());
                 MagicBoard(next_position, board, second_board, board[next_position.getRow()][next_position.getCol()], 0);
             } else counter++;
+
         }
         if (counter == 2) { // DOWN > row addition
             if (position.getRow() + move < board.length) {
@@ -278,7 +281,8 @@ public class Main {
                 MagicBoard(position.getParent(), board, second_board, board[position.getParent().getRow()][position.getParent().getCol()], 0);
             }
         }
-        return true; //(board[nextPosition.getRow()][nextPosition.getCol()] == board[end_row][end_col]);
+
+        return true;
     }
 
     public static void LetsPlay(int[][] board, int move, int start_row, int start_col, int end_row, int end_col) {
@@ -363,7 +367,7 @@ public class Main {
         int start_row = 0;
         int start_col = 0;
         // int end_row;
-        //   int end_col;
+        // int end_col;
 
         String start_string;
 
@@ -416,12 +420,11 @@ public class Main {
                     "\nYour gaming board is solvable and now ready for you to play !\nPlease note that the end point (0) and the " +
                     "point where you are located are written in bold and italic so that you can easy identify them.\n");
             BoardPrint(board, start_row, start_col);
+            System.out.println((char) 27 + "[0m" +
+                    "It is now time for you to play. Please enter either \"left\", \"right\", \"up\" or \"down\" to move through the magic board.");
+            LetsPlay(board, move, start_row, start_col, end_row, end_col);
         } else { // if the game is not doable
             System.out.println("\nWe are sorry to announce you that the board initiated is not solvable.");
         }
-        System.out.println((char) 27 + "[0m" +
-                "It is now time for you to play. Please enter either \"left\", \"right\", \"up\" or \"down\" to move through the magic board.");
-
-        LetsPlay(board, move, start_row, start_col, end_row, end_col);
     }
 }
